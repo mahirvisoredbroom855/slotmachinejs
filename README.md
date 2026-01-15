@@ -10,6 +10,12 @@
 [![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](LICENSE)
 [![Firebase](https://img.shields.io/badge/Powered%20by-Firebase-orange?style=for-the-badge&logo=firebase)](https://firebase.google.com)
 
+<br/>
+
+<img src="README-assets/mainpage.png" alt="SlotLab Main Casino Slot Machine Page" width="900" />
+
+<br/>
+
 </div>
 
 ---
@@ -83,6 +89,12 @@
 
 **SlotLab** transforms a simple slot machine game into a comprehensive data analytics platform. Built with enterprise-grade technologies, it demonstrates real-world application development practices including authentication, database design, API architecture, data visualization, and statistical analysis.
 
+<br/>
+
+<img src="README-assets/login.png" alt="The Login Screenshot" width="900" />
+
+<br/>
+
 ### What Makes SlotLab Unique?
 
 - 🎲 **Realistic Slot Machine Engine** - Weighted symbol distribution with configurable paylines
@@ -109,6 +121,12 @@
   - 🔔 Bell (B): 20% probability, 4x multiplier
   - 🍒 Cherry (C): 30% probability, 3x multiplier
   - ⭐ Star (D): 40% probability, 2x multiplier
+
+<br/>
+
+<img src="README-assets/win.png" alt="When won" width="900" />
+
+<br/>
 
 ### 📊 Analytics Dashboard
 
@@ -218,6 +236,7 @@
 ### System Design
 
 ```
+
 ┌─────────────────────────────────────────────────────────────┐
 │                         CLIENT LAYER                         │
 │  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐      │
@@ -228,12 +247,12 @@
 │         └─────────────────┴──────────────────┘              │
 │                           │                                 │
 └───────────────────────────┼─────────────────────────────────┘
-                            │
-                    ┌───────▼────────┐
-                    │  Firebase Auth │
-                    │  (JWT Tokens)  │
-                    └───────┬────────┘
-                            │
+│
+┌───────▼────────┐
+│  Firebase Auth │
+│  (JWT Tokens)  │
+└───────┬────────┘
+│
 ┌───────────────────────────▼─────────────────────────────────┐
 │                      API LAYER (Express)                     │
 │  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐   │
@@ -247,7 +266,7 @@
 │              │  (Pure TypeScript)      │                    │
 │              └─────────────────────────┘                    │
 └───────────────────────────┬─────────────────────────────────┘
-                            │
+│
 ┌───────────────────────────▼─────────────────────────────────┐
 │                    DATABASE LAYER                            │
 │  ┌─────────────────────────────────────────────────────┐    │
@@ -258,6 +277,7 @@
 │  │  └────────────┘  └────────────┘  └────────────┘   │    │
 │  └─────────────────────────────────────────────────────┘    │
 └─────────────────────────────────────────────────────────────┘
+
 ```
 
 ### Data Flow
@@ -268,64 +288,66 @@
    - Token sent with every API request
 
 2. **Spin Request Flow**
-   ```
-   User clicks SPIN
-   → Frontend validates balance
-   → POST /api/spin with lines & betPerLine
-   → Backend verifies JWT token
-   → Fetches user balance from Firestore
-   → Runs slot engine (pure function)
-   → Updates balance in Firestore
-   → Records spin in user's spin collection
-   → Updates aggregated stats
-   → Returns result to frontend
-   → UI updates with animation & result
-   ```
+```
+
+User clicks SPIN
+→ Frontend validates balance
+→ POST /api/spin with lines & betPerLine
+→ Backend verifies JWT token
+→ Fetches user balance from Firestore
+→ Runs slot engine (pure function)
+→ Updates balance in Firestore
+→ Records spin in user's spin collection
+→ Updates aggregated stats
+→ Returns result to frontend
+→ UI updates with animation & result
+
+````
 
 3. **Real-time Analytics**
-   - Dashboard fetches `/api/stats`
-   - Aggregated stats retrieved from Firestore
-   - Last 50 spins queried with pagination
-   - Charts rendered with Recharts
-   - Export buttons trigger download endpoints
+- Dashboard fetches `/api/stats`
+- Aggregated stats retrieved from Firestore
+- Last 50 spins queried with pagination
+- Charts rendered with Recharts
+- Export buttons trigger download endpoints
 
 ### Database Schema
 
 ```typescript
 // users/{uid}
 {
-  email: string,
-  balance: number,
-  createdAt: Timestamp,
-  lastLoginAt: Timestamp
+email: string,
+balance: number,
+createdAt: Timestamp,
+lastLoginAt: Timestamp
 }
 
 // users/{uid}/spins/{spinId}
 {
-  reels: string[],        // ['A,B,C', 'D,E,F', 'G,H,I']
-  rows: string[],         // ['A,D,G', 'B,E,H', 'C,F,I']
-  winnings: number,
-  totalBet: number,
-  net: number,
-  lines: number,
-  betPerLine: number,
-  balanceAfter: number,
-  symbolCountsObserved: { A: 2, B: 3, C: 1, D: 3 },
-  createdAt: Timestamp
+reels: string[],        // ['A,B,C', 'D,E,F', 'G,H,I']
+rows: string[],         // ['A,D,G', 'B,E,H', 'C,F,I']
+winnings: number,
+totalBet: number,
+net: number,
+lines: number,
+betPerLine: number,
+balanceAfter: number,
+symbolCountsObserved: { A: 2, B: 3, C: 1, D: 3 },
+createdAt: Timestamp
 }
 
 // users/{uid}/stats/current
 {
-  totalSpins: number,
-  totalBet: number,
-  totalWinnings: number,
-  netProfit: number,
-  winRate: number,        // 0.0 - 1.0
-  avgBetSize: number,
-  symbolFrequencies: { A: number, B: number, C: number, D: number },
-  lastUpdated: Timestamp
+totalSpins: number,
+totalBet: number,
+totalWinnings: number,
+netProfit: number,
+winRate: number,        // 0.0 - 1.0
+avgBetSize: number,
+symbolFrequencies: { A: number, B: number, C: number, D: number },
+lastUpdated: Timestamp
 }
-```
+````
 
 ---
 
@@ -333,20 +355,22 @@
 
 ### Prerequisites
 
-- **Node.js** 18.x or higher
-- **npm** 9.x or higher
-- **Firebase Account** (free tier)
-- **Perl** 5.x (for data processing scripts)
+* **Node.js** 18.x or higher
+* **npm** 9.x or higher
+* **Firebase Account** (free tier)
+* **Perl** 5.x (for data processing scripts)
 
 ### Installation
 
 1. **Clone the repository**
+
    ```bash
    git clone https://github.com/yourusername/slotlab.git
    cd slotlab
    ```
 
 2. **Install dependencies**
+
    ```bash
    # Install server dependencies
    cd server
@@ -362,6 +386,7 @@
    ```
 
 3. **Firebase Setup**
+
    ```bash
    # Login to Firebase
    firebase login
@@ -371,8 +396,9 @@
    ```
 
 4. **Configure Firebase**
-   
+
    **Client:** Update `client/src/lib/firebase.ts`
+
    ```typescript
    const firebaseConfig = {
      apiKey: "YOUR_API_KEY",
@@ -385,10 +411,12 @@
    ```
 
    **Server:** Add `firebase-service-account.json`
-   - Download from Firebase Console → Settings → Service Accounts
-   - Place in `server/` directory
+
+   * Download from Firebase Console → Settings → Service Accounts
+   * Place in `server/` directory
 
 5. **Set Firestore Rules**
+
    ```bash
    firebase deploy --only firestore:rules
    ```
@@ -396,6 +424,7 @@
 ### Running Locally
 
 **Terminal 1 - Backend Server:**
+
 ```bash
 cd server
 npm run dev
@@ -403,6 +432,7 @@ npm run dev
 ```
 
 **Terminal 2 - Frontend Client:**
+
 ```bash
 cd client
 npm run dev
@@ -480,11 +510,14 @@ slotlab/
 ## 📡 API Documentation
 
 ### Base URL
-- **Development:** `http://localhost:5001/api`
-- **Production:** `https://your-backend.onrender.com/api`
+
+* **Development:** `http://localhost:5001/api`
+* **Production:** `https://your-backend.onrender.com/api`
 
 ### Authentication
+
 All endpoints require Firebase JWT token in header:
+
 ```
 Authorization: Bearer <firebase-id-token>
 ```
@@ -494,9 +527,11 @@ Authorization: Bearer <firebase-id-token>
 ### Endpoints
 
 #### `POST /init`
+
 Initialize or retrieve user account.
 
 **Response:**
+
 ```json
 {
   "uid": "user123",
@@ -509,9 +544,11 @@ Initialize or retrieve user account.
 ---
 
 #### `POST /spin`
+
 Execute a slot machine spin.
 
 **Request:**
+
 ```json
 {
   "lines": 3,
@@ -520,6 +557,7 @@ Execute a slot machine spin.
 ```
 
 **Response:**
+
 ```json
 {
   "reels": [["A","B","C"], ["D","A","B"], ["C","D","A"]],
@@ -533,16 +571,19 @@ Execute a slot machine spin.
 ```
 
 **Errors:**
-- `400` - Invalid parameters or insufficient balance
-- `401` - Unauthorized
-- `500` - Server error
+
+* `400` - Invalid parameters or insufficient balance
+* `401` - Unauthorized
+* `500` - Server error
 
 ---
 
 #### `GET /stats`
+
 Retrieve user statistics and recent spins.
 
 **Response:**
+
 ```json
 {
   "balance": 970,
@@ -564,9 +605,11 @@ Retrieve user statistics and recent spins.
 ---
 
 #### `POST /simulate`
+
 Run Monte Carlo simulation.
 
 **Request:**
+
 ```json
 {
   "trials": 10000,
@@ -576,6 +619,7 @@ Run Monte Carlo simulation.
 ```
 
 **Response:**
+
 ```json
 {
   "trials": 10000,
@@ -597,20 +641,24 @@ Run Monte Carlo simulation.
 ---
 
 #### `GET /export/json`
+
 Download session data as JSON.
 
 **Query Params:**
-- `limit` (optional): Number of spins to include (default: 1000)
+
+* `limit` (optional): Number of spins to include (default: 1000)
 
 **Response:** File download
 
 ---
 
 #### `GET /export/xml`
+
 Download session data as XML.
 
 **Query Params:**
-- `limit` (optional): Number of spins to include (default: 1000)
+
+* `limit` (optional): Number of spins to include (default: 1000)
 
 **Response:** File download
 
@@ -623,6 +671,7 @@ Download session data as XML.
 Located in `scripts/` directory.
 
 #### Prerequisites
+
 ```bash
 # Install required Perl modules
 cpan JSON
@@ -630,6 +679,7 @@ cpan XML::Simple
 ```
 
 #### 1. Spin Analyzer
+
 Generate comprehensive statistics report.
 
 ```bash
@@ -637,6 +687,7 @@ perl scripts/analyze_spins.pl slotlab-export-123.json
 ```
 
 **Output:**
+
 ```
 ============================================================
           SLOTLAB SPIN ANALYSIS REPORT
@@ -665,6 +716,7 @@ Longest Loss Streak:   15 spins
 ```
 
 #### 2. CSV Exporter
+
 Convert to Excel-compatible format.
 
 ```bash
@@ -672,11 +724,13 @@ perl scripts/export_to_csv.pl export.json output.csv
 ```
 
 #### 3. JSON to XML Converter
+
 ```bash
 perl scripts/json_to_xml.pl input.json output.xml
 ```
 
 #### 4. Session Comparator
+
 Compare two gaming sessions.
 
 ```bash
@@ -697,13 +751,15 @@ npm test
 ```
 
 **Test Coverage:**
-- Slot engine mechanics (spin, transpose, getWinnings)
-- Symbol distribution validation
-- Payout calculation accuracy
-- Statistical distribution (10k spin validation)
-- Edge cases and error handling
+
+* Slot engine mechanics (spin, transpose, getWinnings)
+* Symbol distribution validation
+* Payout calculation accuracy
+* Statistical distribution (10k spin validation)
+* Edge cases and error handling
 
 **Example Test Output:**
+
 ```
   Slot Engine
     spin()
@@ -719,15 +775,15 @@ npm test
 
 ### Manual Testing Checklist
 
-- [ ] User registration and login
-- [ ] Balance initialization ($1000)
-- [ ] Spin with different line configurations
-- [ ] Win calculation accuracy
-- [ ] Dashboard stat updates
-- [ ] Monte Carlo simulation (1k, 10k, 100k trials)
-- [ ] JSON/XML export downloads
-- [ ] Session persistence across logout/login
-- [ ] Mobile responsiveness
+* [ ] User registration and login
+* [ ] Balance initialization ($1000)
+* [ ] Spin with different line configurations
+* [ ] Win calculation accuracy
+* [ ] Dashboard stat updates
+* [ ] Monte Carlo simulation (1k, 10k, 100k trials)
+* [ ] JSON/XML export downloads
+* [ ] Session persistence across logout/login
+* [ ] Mobile responsiveness
 
 ---
 
@@ -750,17 +806,20 @@ firebase deploy --only hosting
 ### Backend Options
 
 #### Option 1: Firebase Cloud Functions
+
 ```bash
 firebase deploy --only functions
 ```
 
 #### Option 2: Render.com
+
 1. Create account at [render.com](https://render.com)
 2. Connect GitHub repository
 3. Deploy `server/` as Web Service
 4. Update client API URL
 
 #### Option 3: Railway.app
+
 1. Sign up at [railway.app](https://railway.app)
 2. Deploy from GitHub
 3. Add environment variables
@@ -769,6 +828,7 @@ firebase deploy --only functions
 ### Environment Variables
 
 **Backend (.env):**
+
 ```
 PORT=5001
 NODE_ENV=production
@@ -783,13 +843,20 @@ Update `client/src/lib/api.ts` with production API URL.
 ## 📸 Screenshots
 
 ### Game Interface
-![Game Screen](https://via.placeholder.com/800x600?text=SlotLab+Game+Interface)
+
+![The Login Screenshot](README-assets/login.png)
 
 ### Analytics Dashboard
-![Dashboard](https://via.placeholder.com/800x600?text=Analytics+Dashboard)
+
+![The Self Stats Page screenshot](README-assets/stats.png)
 
 ### Monte Carlo Simulation
-![Simulation](https://via.placeholder.com/800x600?text=Monte+Carlo+Simulation)
+
+![Main Casino Slot Machine Page](README-assets/mainpage.png)
+
+### Win Screen
+
+![When won](README-assets/win.png)
 
 ---
 
@@ -798,30 +865,34 @@ Update `client/src/lib/api.ts` with production API URL.
 This project demonstrates proficiency in:
 
 ### Full-Stack Development
-- RESTful API design and implementation
-- Database schema design (NoSQL)
-- Authentication and authorization
-- State management in React
-- TypeScript type safety
+
+* RESTful API design and implementation
+* Database schema design (NoSQL)
+* Authentication and authorization
+* State management in React
+* TypeScript type safety
 
 ### Data Engineering
-- ETL pipelines with Perl
-- Multi-format data export (JSON, XML, CSV)
-- Statistical analysis and reporting
-- Data visualization with charts
+
+* ETL pipelines with Perl
+* Multi-format data export (JSON, XML, CSV)
+* Statistical analysis and reporting
+* Data visualization with charts
 
 ### Software Engineering
-- Clean architecture principles
-- Unit testing with Mocha/Chai
-- Version control with Git
-- CI/CD deployment strategies
-- Security best practices
+
+* Clean architecture principles
+* Unit testing with Mocha/Chai
+* Version control with Git
+* CI/CD deployment strategies
+* Security best practices
 
 ### Mathematics & Statistics
-- Probability distribution modeling
-- Monte Carlo simulation methods
-- ROI and risk analysis
-- Confidence interval calculation
+
+* Probability distribution modeling
+* Monte Carlo simulation methods
+* ROI and risk analysis
+* Confidence interval calculation
 
 ---
 
@@ -837,11 +908,11 @@ Contributions are welcome! Please follow these steps:
 
 ### Development Guidelines
 
-- Follow TypeScript best practices
-- Write tests for new features
-- Update documentation
-- Use conventional commit messages
-- Ensure all tests pass before PR
+* Follow TypeScript best practices
+* Write tests for new features
+* Update documentation
+* Use conventional commit messages
+* Ensure all tests pass before PR
 
 ---
 
@@ -855,27 +926,27 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 **Mahir Ahmed**
 
-- GitHub: [@yourusername](https://github.com/yourusername)
-- LinkedIn: [Your LinkedIn](https://linkedin.com/in/yourprofile)
-- Email: your.email@example.com
+* GitHub: [@yourusername](https://github.com/yourusername)
+* LinkedIn: [Your LinkedIn](https://linkedin.com/in/yourprofile)
+* Email: [your.email@example.com](mailto:your.email@example.com)
 
 ---
 
 ## 🙏 Acknowledgments
 
-- Firebase team for excellent documentation
-- React and TypeScript communities
-- Recharts for visualization library
-- Tailwind CSS for utility-first styling
-- All open-source contributors
+* Firebase team for excellent documentation
+* React and TypeScript communities
+* Recharts for visualization library
+* Tailwind CSS for utility-first styling
+* All open-source contributors
 
 ---
 
 ## 🔗 Links
 
-- **Live Demo:** [https://slotlab-4bc1e.web.app](https://slotlab-4bc1e.web.app)
-- **Documentation:** [API Docs](#api-documentation)
-- **Report Issues:** [GitHub Issues](https://github.com/yourusername/slotlab/issues)
+* **Live Demo:** [https://slotlab-4bc1e.web.app](https://slotlab-4bc1e.web.app)
+* **Documentation:** [API Docs](#api-documentation)
+* **Report Issues:** [GitHub Issues](https://github.com/yourusername/slotlab/issues)
 
 ---
 
@@ -888,3 +959,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ![Watchers](https://img.shields.io/github/watchers/yourusername/slotlab?style=social)
 
 </div>
+```
