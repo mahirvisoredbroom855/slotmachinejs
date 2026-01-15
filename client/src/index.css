@@ -1,0 +1,72 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-gradient-to-br from-gray-900 via-purple-900 to-gray-900;
+    @apply text-white min-h-screen;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-gradient-to-r from-casino-gold to-casino-darkGold;
+    @apply text-gray-900 font-bold py-3 px-8 rounded-lg;
+    @apply hover:shadow-2xl hover:shadow-casino-gold/50;
+    @apply transform hover:scale-105 transition-all duration-200;
+    @apply active:scale-95;
+  }
+
+  .btn-spin {
+    @apply bg-gradient-to-br from-casino-red to-casino-darkRed;
+    @apply text-white font-black text-2xl py-6 px-16 rounded-full;
+    @apply shadow-2xl shadow-casino-red/50;
+    @apply hover:shadow-casino-red/80 hover:scale-110;
+    @apply transform transition-all duration-300;
+    @apply active:scale-95;
+    @apply disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100;
+  }
+
+  .card-glass {
+    @apply bg-white/10 backdrop-blur-md border border-white/20;
+    @apply rounded-xl p-6 shadow-xl;
+  }
+
+  .slot-symbol {
+    @apply text-6xl font-black;
+    @apply flex items-center justify-center;
+    @apply w-24 h-24 rounded-lg;
+    @apply shadow-2xl transform transition-all duration-300;
+  }
+
+  .symbol-A {
+    @apply bg-gradient-to-br from-red-500 to-red-700 text-white;
+    @apply shadow-red-500/50;
+  }
+
+  .symbol-B {
+    @apply bg-gradient-to-br from-blue-500 to-blue-700 text-white;
+    @apply shadow-blue-500/50;
+  }
+
+  .symbol-C {
+    @apply bg-gradient-to-br from-green-500 to-green-700 text-white;
+    @apply shadow-green-500/50;
+  }
+
+  .symbol-D {
+    @apply bg-gradient-to-br from-yellow-500 to-yellow-700 text-white;
+    @apply shadow-yellow-500/50;
+  }
+
+  .glow-effect {
+    animation: glow 2s ease-in-out infinite;
+  }
+
+  @keyframes glow {
+    0%, 100% { box-shadow: 0 0 20px rgba(255, 215, 0, 0.5); }
+    50% { box-shadow: 0 0 40px rgba(255, 215, 0, 0.8); }
+  }
+}
