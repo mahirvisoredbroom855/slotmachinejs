@@ -1,0 +1,23 @@
+{
+  "name": "slotmachinejs",
+  "version": "1.0.0",
+  "description": "Slot Machine Project",
+  "homepage": "https://github.com/mahirvisoredbroom855/slotmachinejs#readme",
+  "bugs": {
+    "url": "https://github.com/mahirvisoredbroom855/slotmachinejs/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mahirvisoredbroom855/slotmachinejs.git"
+  },
+  "license": "ISC",
+  "author": "Shahriyar Mahir",
+  "type": "commonjs",
+  "main": "project.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "prompt-sync": "^4.2.0"
+  }
+}
