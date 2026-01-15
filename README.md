@@ -842,7 +842,7 @@ Update `client/src/lib/api.ts` with production API URL.
 
 ## 📸 Screenshots
 
-### Game Interface
+### Login Interface
 
 ![The Login Screenshot](README-assets/login.png)
 
@@ -852,7 +852,7 @@ Update `client/src/lib/api.ts` with production API URL.
 
 ### Monte Carlo Simulation
 
-![Main Casino Slot Machine Page](README-assets/mainpage.png)
+![Main Casino Slot Machine Page](README-assets/montecarlos.png)
 
 ### Win Screen
 
