@@ -26,24 +26,28 @@ export default function Game() {
     try {
       const data = await api.init();
       setBalance(data.balance);
+      console.log('User initialized:', data);
     } catch (error) {
       console.error('Init error:', error);
+      alert('Failed to initialize user. Please refresh the page.');
     }
   };
 
   const handleSpin = async (lines: number, betPerLine: number) => {
+    console.log('🎰 Spin initiated:', { lines, betPerLine, balance });
     setIsSpinning(true);
+    setLastResult(null);
     
     try {
-      // Simulate spinning animation
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
       const result = await api.spin(lines, betPerLine);
+      console.log('✅ Spin result:', result);
+      
       setLastResult(result);
       setRows(result.rows);
       setBalance(result.balanceAfter);
     } catch (error: any) {
-      alert(error.message || 'Spin failed');
+      console.error('❌ Spin error:', error);
+      alert(`Spin failed: ${error.message}`);
     } finally {
       setIsSpinning(false);
     }
@@ -96,6 +100,15 @@ export default function Game() {
           <div className="lg:col-span-2 space-y-6">
             <SlotGrid rows={rows} isSpinning={isSpinning} />
             
+            {/* Spinning Indicator */}
+            {isSpinning && (
+              <div className="card-glass text-center">
+                <p className="text-3xl font-bold text-casino-gold animate-pulse">
+                  🎰 Spinning...
+                </p>
+              </div>
+            )}
+
             {/* Result Display */}
             {lastResult && !isSpinning && (
               <div className={`card-glass text-center animate-slide-up ${

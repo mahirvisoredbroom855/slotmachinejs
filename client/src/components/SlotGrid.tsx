@@ -1,5 +1,4 @@
 import type { Symbol } from '../types';
-import { useEffect, useState } from 'react';
 
 interface SlotGridProps {
   rows: Symbol[][];
@@ -12,21 +11,6 @@ const getSymbolEmoji = (symbol: Symbol): string => {
 };
 
 export default function SlotGrid({ rows, isSpinning }: SlotGridProps) {
-  const [displayRows, setDisplayRows] = useState<Symbol[][]>(rows);
-  const [spinOffset, setSpinOffset] = useState(0);
-
-  useEffect(() => {
-    if (isSpinning) {
-      const interval = setInterval(() => {
-        setSpinOffset(prev => prev + 10);
-      }, 50);
-      return () => clearInterval(interval);
-    } else {
-      setSpinOffset(0);
-      setDisplayRows(rows);
-    }
-  }, [isSpinning, rows]);
-
   return (
     <div className="relative">
       {/* Casino Slot Frame */}
@@ -34,14 +18,11 @@ export default function SlotGrid({ rows, isSpinning }: SlotGridProps) {
         <div className="bg-gradient-to-br from-gray-900 to-gray-800 p-6 rounded-2xl">
           {/* Slot Grid */}
           <div className="grid grid-cols-3 gap-4">
-            {displayRows.map((row, rowIndex) => (
+            {rows.map((row, rowIndex) => (
               row.map((symbol, colIndex) => (
                 <div
                   key={`${rowIndex}-${colIndex}`}
-                  className={`slot-symbol symbol-${symbol} ${isSpinning ? 'animate-pulse' : ''}`}
-                  style={{
-                    transform: isSpinning ? `translateY(${spinOffset % 200}px)` : 'none',
-                  }}
+                  className={`slot-symbol symbol-${symbol} ${isSpinning ? 'opacity-50' : ''}`}
                 >
                   {getSymbolEmoji(symbol)}
                 </div>

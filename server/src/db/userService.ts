@@ -34,7 +34,7 @@ export const getOrCreateUser = async (uid: string, email: string): Promise<UserD
   if (!userDoc.exists) {
     const newUser: UserData = {
       email,
-      balance: 1000, // Starting balance
+      balance: 1000,
       createdAt: new Date(),
       lastLoginAt: new Date(),
     };
@@ -59,7 +59,7 @@ export const updateUserBalance = async (uid: string, newBalance: number): Promis
   await usersCollection().doc(uid).update({ balance: newBalance });
 };
 
-// Record a spin
+// Record a spin - ✅ FIXED: Convert nested arrays to strings
 export const recordSpin = async (
   uid: string,
   spinResult: SpinResult,
@@ -67,16 +67,27 @@ export const recordSpin = async (
   betPerLine: number,
   balanceAfter: number
 ): Promise<void> => {
-  const spinRecord: SpinRecord = {
-    ...spinResult,
-    lines,
-    betPerLine,
-    balanceAfter,
-    createdAt: new Date(),
-  };
+  try {
+    // Convert nested arrays to comma-separated strings for Firestore
+    const spinRecord = {
+      reels: spinResult.reels.map(reel => reel.join(',')),
+      rows: spinResult.rows.map(row => row.join(',')),
+      winnings: spinResult.winnings,
+      totalBet: spinResult.totalBet,
+      net: spinResult.net,
+      symbolCountsObserved: spinResult.symbolCountsObserved,
+      lines,
+      betPerLine,
+      balanceAfter,
+      createdAt: new Date(),
+    };
 
-  await spinsCollection(uid).add(spinRecord);
-  await updateStats(uid, spinResult);
+    await spinsCollection(uid).add(spinRecord);
+    await updateStats(uid, spinResult);
+  } catch (error) {
+    console.error('❌ Error in recordSpin:', error);
+    throw error;
+  }
 };
 
 // Update aggregated stats
@@ -96,7 +107,6 @@ const updateStats = async (uid: string, spinResult: SpinResult): Promise<void> =
       lastUpdated: new Date(),
     };
 
-    // ✅ Use set() (typed safe) instead of update()
     await statsRef.set(initialStats as FirebaseFirestore.DocumentData);
     return;
   }
@@ -127,7 +137,6 @@ const updateStats = async (uid: string, spinResult: SpinResult): Promise<void> =
     lastUpdated: new Date(),
   };
 
-  // ✅ Fix: Firestore update typing issue -> set with merge
   await statsRef.set(updatedStats as FirebaseFirestore.DocumentData, { merge: true });
 };
 
@@ -138,8 +147,19 @@ export const getUserStats = async (uid: string): Promise<UserStats | null> => {
   return statsDoc.data() as UserStats;
 };
 
-// Get recent spins
+// Get recent spins - ✅ FIXED: Convert strings back to arrays
 export const getRecentSpins = async (uid: string, limit: number = 50): Promise<SpinRecord[]> => {
   const snapshot = await spinsCollection(uid).orderBy("createdAt", "desc").limit(limit).get();
-  return snapshot.docs.map((doc) => doc.data() as SpinRecord);
+  
+  return snapshot.docs.map((doc) => {
+    const data = doc.data();
+    
+    // Convert comma-separated strings back to nested arrays
+    return {
+      ...data,
+      reels: data.reels.map((reel: string) => reel.split(',')),
+      rows: data.rows.map((row: string) => row.split(',')),
+      createdAt: data.createdAt.toDate ? data.createdAt.toDate().toISOString() : data.createdAt,
+    } as any;
+  });
 };
